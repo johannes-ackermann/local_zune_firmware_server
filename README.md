@@ -14,18 +14,18 @@ Please install:
 * Vagrant: https://www.vagrantup.com/downloads.html
 * Zune Desktop Software (Version 4.8 recommended): https://www.microsoft.com/de-de/download/details.aspx?id=27163
 
-## 2. Getting the setup ready
-* Add write permissions to the directory for all users: C:\HashiCorp\Vagrant
+Prepare the local environment:
+* Add write permissions to the Vagrant installation directory (e.g. `C:\HashiCorp\Vagrant`)
 * Run: `vagrant plugin install vagrant-hostmanager`
 * and: `vagrant plugin install vagrant-triggers`
 
-## 3. Adding the Firmware files
+## 2. Adding the Firmware files
 * Firmware files are not inside this package as they belong to Microsft.
 * Download these files from http://go.microsoft.com/fwlink/?LinkId=185560
 * Download the program "LesMSIerables" from http://blogs.pingpoet.com/overflow/archive/2005/11/16/14995.aspx and extract the archive.
 * Launch `lessmsi.exe` and extract extract the *.cab files to the `htdocs\firmware\v4_5` directory of this project.
 
-## 4. Starting the recovery
+## 3. Starting the recovery
 * Open a command prompt window and cd to the project's root directory (where Vagrantfile is located).
 * Buld this virtual machine. This can take a while when starting it the first time. Type:
 `vagrant up`
