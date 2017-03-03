@@ -1,0 +1,37 @@
+---
+- name: Check swap
+  become: yes
+  shell: cat /proc/swaps | wc -l
+  when: not docker
+  changed_when: false
+  register: check_swap_cmd
+
+# Workaround for official virtualbox ubuntu image
+- name: Enable swap
+  become: yes
+  shell: "{{ item }}"
+  with_items:
+    - 'fallocate -l 8000M /swapfile'
+    - 'chmod 600 /swapfile'
+    - 'mkswap /swapfile'
+    - 'swapon /swapfile'
+    - 'echo "/swapfile none swap defaults 0 0" >> /etc/fstab'
+  when: not docker and check_swap_cmd.stdout == '1'
+
+- name: Disable unattended-upgrade
+  become: yes
+  template: src=20auto-upgrades_off dest=/etc/apt/apt.conf.d/20auto-upgrades
+  when: not server.unattended_upgrade
+
+- name: Enable unattended-upgrade
+  become: yes
+  template: src=20auto-upgrades_on dest=/etc/apt/apt.conf.d/20auto-upgrades
+  when: server.unattended_upgrade
+
+# Workaround for https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1402834
+- name: Use force-less umount
+  become: yes
+  get_url:
+    url: "{{ server.forceless_umount_url }}"
+    dest: /bin/umount
+    force: yes

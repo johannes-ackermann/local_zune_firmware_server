@@ -1,0 +1,70 @@
+---
+- name: Set the hostname in /etc/hostname
+  become: yes
+  shell: echo {{ vagrant_local.vm.hostname }} > /etc/hostname
+  when: not docker and vagrant_local.vm.hostname is defined
+
+- name: Set the hostname
+  become: yes
+  shell: hostname {{ vagrant_local.vm.hostname }}
+  when: not docker and vagrant_local.vm.hostname is defined
+
+- name: Update /etc/hosts
+  become: yes
+  lineinfile: "dest=/etc/hosts regexp=\"^127\\.0\\.0\\.1\" line=\"127.0.0.1 localhost {{ vagrant_local.vm.hostname }}\" owner=root group=root mode=0644"
+  when: not docker
+  tags: [internal_always]
+
+- name: Disable ndots
+  become: yes
+  lineinfile:
+    dest=/etc/resolvconf/resolv.conf.d/head
+    regexp="^domain"
+    line="domain ."
+  notify: Update resolver
+
+- name: Configure Apt source mirror
+  become: yes
+  template: src=sources.tpl dest=/etc/apt/sources.list
+
+- name: Update apt
+  become: yes
+  apt: update_cache=yes
+
+- name: Install System Packages
+  become: yes
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - curl
+    - wget
+    - python-software-properties
+
+- name: Install Extra Packages
+  become: yes
+  apt: pkg={{ item }} state=latest
+  with_items: "{{ server.packages }}"
+  when: server.packages
+
+- name: Install Extra personal Packages
+  become: yes
+  apt: pkg={{ item }} state=latest
+  with_items: "{{ server.personal_packages }}"
+  when: server.personal_packages
+
+- name: Configure the timezone
+  become: yes
+  template: src=timezone.tpl dest=/etc/timezone
+
+- name: More Configure the timezone
+  become: yes
+  file: src=/usr/share/zoneinfo/{{ server.timezone }} dest=/etc/localtime state=link force=yes backup=yes
+
+- name: Set default system language pack
+  become: yes
+  shell: locale-gen {{server.locale}}
+
+- include: fixup.yml
+
+- include: bindfs.yml
+  when: vagrant_local.vm.app_shared_folder.bindfs
+  tags: [internal_always]

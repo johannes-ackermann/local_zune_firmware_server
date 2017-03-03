@@ -1,0 +1,18 @@
+class ConfigMergeCommand < Vagrant.plugin(2, :command)
+  def self.synopsis
+    "Provides merged version of personal.yml configuration"
+  end
+
+  def execute
+    ENV['CONFIG'] = '1'
+    0
+  end
+end
+
+class ConfigMergePlugin < Vagrant.plugin(2)
+  name "Personal configuration merge plugin"
+
+  command "config" do
+    ConfigMergeCommand
+  end
+end

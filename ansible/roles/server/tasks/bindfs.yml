@@ -1,0 +1,39 @@
+- name: Install bindfs
+  become: yes
+  apt:
+    pkg: bindfs
+    state: latest
+
+- name: Check placeholder for shared folder
+  become: yes
+  file:
+    path: "{{ vagrant_local.vm.app_shared_folder.target }}"
+    state: directory
+
+- name: Check state of fuse device
+  become: yes
+  stat: path=/dev/fuse
+  register: fuse_dev_status
+
+- name: Create fuse device
+  become: yes
+  shell: mknod /dev/fuse c 10 229
+  when: not fuse_dev_status.stat.exists
+
+- name: Check for need to run bindfs
+  become: yes
+  ignore_errors: yes
+  failed_when: false
+  changed_when: false
+  shell: "df -h | grep bindfs"
+  register: bindfs_check
+
+- name: Run bindfs
+  become: yes
+  shell: |
+    bindfs --force-user={{ vagrant_local.vm.app_shared_folder.owner }} \
+    --force-group={{ vagrant_local.vm.app_shared_folder.group }} \
+    --perms={{ vagrant_local.vm.app_shared_folder.permissions }} \
+    /mnt/asf \
+    {{ vagrant_local.vm.app_shared_folder.target }}
+  when: bindfs_check.rc == 1

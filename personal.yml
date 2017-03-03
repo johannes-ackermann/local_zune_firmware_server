@@ -1,0 +1,17 @@
+---
+# Override any variable from 'ansible/vars/default.yml'
+vagrant_local:
+  vm:
+    name: Local Zune Firmware Server
+    hostname: resources.zune.net
+    ip: 192.168.56.171
+    app_shared_folder:
+      source: ./
+      target: /var/vagrant
+server:
+  timezone: Europe/Berlin
+  locale: de_DE.UTF-8
+  apt_mirror: http://de.archive.ubuntu.com/ubuntu/
+apache:
+  install: true
+  docroot: /vagrant/htdocs

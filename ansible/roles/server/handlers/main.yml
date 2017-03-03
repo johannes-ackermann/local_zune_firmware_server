@@ -1,0 +1,4 @@
+---
+- name: Update resolver
+  become: yes
+  shell: resolvconf -u

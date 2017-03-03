@@ -1,0 +1,17 @@
+# OS
+.DS_Store/
+thumbs.db
+desktop.ini
+
+# Vagrant
+.vagrant/
+/html/
+
+# Ansible
+playbook.retry
+
+# Python
+*.py[cod]
+
+# Proprietary materials
+*.cab

@@ -1,0 +1,43 @@
+---
+vagrant_local:
+  vm:
+    name: default
+    provider: virtualbox
+    base_box: ubuntu/trusty64
+    hostname: default.dev
+    aliases:
+      - www.default.dev
+    ip: 192.168.123.2
+    memory: '512'
+    cpus: 1
+    app_shared_folder:
+      source: ./
+      target: /var/www
+      sync_type: ~
+      owner: vagrant
+      group: vagrant
+      permissions: u=rwX:g=rwX:o=rD
+      bindfs: true
+    provider_specific:
+      parallels:
+        base_box: parallels/ubuntu-14.04
+      lxc:
+        base_box: oxid_esales/trusty64-lxc
+        ip: ~
+        app_shared_folder:
+          sync_type: ~
+docker: false
+server:
+  timezone: Europe/Berlin
+  locale: en_US.UTF-8
+  apt_mirror: http://us.archive.ubuntu.com/ubuntu/
+  unattended_upgrade: false
+  packages: ~
+  personal_packages: ~
+  forceless_umount_url: https://github.com/OXID-eSales/oxvm_assets/blob/master/umount?raw=true
+apache:
+  install: true
+  docroot: /vagrant
+  servername: myApp.vb
+  user: "{{ vagrant_local.vm.app_shared_folder.owner }}"
+  group: "{{ vagrant_local.vm.app_shared_folder.group }}"

@@ -1,0 +1,9 @@
+---
+- hosts: all
+  remote_user: vagrant
+  vars_files:
+    - vars/default.yml
+    - [~/.personal_ansible_vm.yml, vars/default.yml]
+    - [../personal.yml, ~/.personal_ansible_vm.yml, vars/default.yml]
+  roles:
+    - common
