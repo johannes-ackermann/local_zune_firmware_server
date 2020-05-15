@@ -10,12 +10,10 @@ Installing the Zune Firmware fails with the error codes C00D133C (80190194).
 ## 1. Preparations
 Please install:
 * VirtualBox: https://www.virtualbox.org/
-* VirtualBox Extension Pack (see above)
 * Vagrant: https://www.vagrantup.com/downloads.html
 * Zune Desktop Software (Version 4.8 recommended): https://www.microsoft.com/de-de/download/details.aspx?id=27163
 
 Prepare the local environment:
-* Add write permissions to the Vagrant installation directory (e.g. `C:\HashiCorp\Vagrant`)
 * Run: `vagrant plugin install vagrant-hostmanager`
 * and: `vagrant plugin install vagrant-triggers`
 
